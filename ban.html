@@ -314,6 +314,15 @@
               banBtn.textContent = player.banned ? 'Unban' : 'Ban';
               return;
             }
+            const { profile } = await supabaseClient
+              .from('profiles')
+              .select('dev');
+            if (profile && profile.dev) {
+              alert("You cannot ban a developer!");
+              banBtn.disabled = false;
+              banBtn.textContent = player.banned ? 'Unban' : 'Ban';
+              return;
+            }
             const { error } = await supabaseClient
               .from('profiles')
               .update({ banned: !player.banned })
