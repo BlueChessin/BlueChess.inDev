@@ -308,6 +308,12 @@
           banBtn.onclick = async () => {
             banBtn.disabled = true;
             banBtn.textContent = player.banned ? 'Unbanning...' : 'Banning...';
+            confirmation = window.confirm(`Are you sure you want to ${player.banned ? 'unban' : 'ban'} ${player.username}?`);
+            if (!confirmation) {
+              banBtn.disabled = false;
+              banBtn.textContent = player.banned ? 'Unban' : 'Ban';
+              return;
+            }
             const { error } = await supabaseClient
               .from('profiles')
               .update({ banned: !player.banned })
@@ -319,6 +325,7 @@
             } else {
               await loadPlayers();
             }
+
           };
 
           playerCard.appendChild(img);
