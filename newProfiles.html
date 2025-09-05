@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blue Chess.in – Add New Profile Pics</title>
+    <meta name="description" content="Welcome to Blue Chess.in! Play online chess against bots, friends, or real players worldwide. Fast, fun, and completely free.">
+  <link rel="shortcut icon" href="files/img/-s-logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg,#02122a,#0f2b55);
+      color: #fff;
+      overflow: hidden;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(0,0,0,.25);
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 20px rgba(74,163,255,0.6), 0 0 40px rgba(74,163,255,0.3);
+      animation: sidebarGlow 3s infinite alternate;
+    }
+    @keyframes sidebarGlow {
+      from { box-shadow: 0 0 20px rgba(74,163,255,0.6), 0 0 40px rgba(74,163,255,0.3); }
+      to   { box-shadow: 0 0 30px rgba(74,163,255,1), 0 0 60px rgba(74,163,255,0.6); }
+    }
+    .sidebar h1 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .logo {
+      width: 200px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .menu button {
+      background-color: rgba(255,255,255,.1);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 8px;
+      text-align: left;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .menu button:hover {
+      background-color: rgba(74,163,255,.9);
+      color: #00122e;
+      transform: translateX(5px);
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
+      margin: 20px;
+      box-shadow: 0 0 25px rgba(255,255,255,.15);
+      text-align: center;
+    }
+    .main h2 {
+      margin-bottom: 20px;
+    }
+    .chessboard-img {
+      display: block;
+      margin: 0 auto;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(74,163,255,0.6);
+    }
+    /* Banners */
+  .banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    z-index: 9999;
+    animation: floatIn 0.4s ease-out;
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+  #joinBanner { background: #28a745; color: white; }
+  #challengeBanner { background: #ffc107; color: black; cursor: default; }
+  .banner button {
+    margin-left: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .banner #green { background: #28a745; color: white; }
+  .banner #red { background: #ff4d4d; color: white; }
+  .main {
+    /* Custom scrollbar styles */
+    scrollbar-width: 20px;
+    scrollbar-color: #4aa3ff #02122a;
+    flex: 1;
+    padding: 20px;
+    background: rgba(255,255,255,.06);
+    border-radius: 14px;
+    margin: 20px;
+    box-shadow: 0 0 25px rgba(255,255,255,.15);
+    text-align: center;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  .main::-webkit-scrollbar {
+    width: 8px;
+    background: #02122a;
+    border-radius: 8px;
+  }
+  .main::-webkit-scrollbar-thumb {
+    background: #4aa3ff;
+    border-radius: 8px;
+  }
+  .main::-webkit-scrollbar-thumb:hover {
+    background: #3578c7;
+  }
+    
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(74,163,255,0.2);
+  }
+  th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: left;
+  }
+  th {
+    background: rgba(74,163,255,0.18);
+    color: #fff;
+    font-weight: bold;
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  tr:hover {
+    background: rgba(74,163,255,0.09);
+  }
+  #submit {
+    background-color: rgba(74,163,255,0.9);
+    color: #00122e;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+  }
+  form #submit:hover {
+    background-color: rgba(74,163,255,1);
+    transform: translateY(-2px);
+  }
+  form input[type="file"] {
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    cursor: pointer;
+  }
+    form input[type="file"]::file-selector-button {
+        background: rgba(74,163,255,0.9);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        color: #00122e;
+        cursor: pointer;
+        transition: background 0.3s;
+        }
+    form input[type="file"]::file-selector-button:hover {
+        background: rgba(74,163,255,1);
+        }
+    form input[type="text"] {
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        width: 200px;
+        }
+    form input[type="text"]::placeholder {
+        color: rgba(255,255,255,0.7);
+        }
+        .profilePics {
+            margin-bottom: 20px;
+            }
+
+    #blueRook {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        margin-left: 4px;
+    }
+
+    
+  </style>
+</head>
+<body>
+<div id="particles-js"></div>
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="files/img/-w-logo.png" alt="Blue Chess.in" class="logo">
+    <div class="menu">
+      <button id="viewP">View All Players</button>
+      <button id="banP">Ban Players</button>
+      <button id="giveB">Give Player Blue Rooks</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <h1>View Profile Pics</h1>
+    <div class="profilePics" id="profilePics"></div> <!-- Container for All profile pictures -->
+    <h1>Add New Profile Pics</h1>
+    <br><br>
+    <form enctype="multipart/form-data" id="uploadForm">
+      <input type="file" id="profilePic" name="profilePic" accept="image/*" required>
+      <br><br>
+      
+      <input type="text" id="picName" name="picName" placeholder="Enter Profile Name" required>
+        <br><br>
+        <input type="text" id="cost" name="cost" placeholder="Enter Cost in Blue Rooks" required>
+      <button type="submit" id="submit">Upload Profile Picture</button>
+
+    </form>
+  </div>
+</div>
+
+
+
+<script>
+  const SUPABASE_URL = "https://ruevzmnbhoowmuleeqjb.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1ZXZ6bW5iaG9vd211bGVlcWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUzNTIsImV4cCI6MjA2OTk3MTM1Mn0.tt_xEAqLGiv92mvqhQaEvsjTBE6cmYDC3kkQcyPqsTY";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+  function getCodeFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('code');
+  }
+
+  document.getElementById('viewP').onclick = function() {
+    window.location.href = 'adminpanel.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
+
+  document.getElementById('banP').onclick = function() {
+    window.location.href = 'ban.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
+
+  document.getElementById('giveB').onclick = function() {
+    window.location.href = 'giveBlueRooks.html?code=' + encodeURIComponent(getCodeFromURL());
+  };  
+
+
+  init();
+  
+  async function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      console.log("Admin code from URL:", code);
+      if (!code) {
+          alert("No code provided. Redirecting to enter code page.");
+          window.location.href = "entercode.html";
+          return;
+      }
+      const { data, error } = await supabaseClient
+          .from('secret_codes')
+          .select('*')
+          .eq('code1', code)
+          .single();
+      
+      if (error || !data) {
+          alert("This Page does Not Exist. Redirecting to Home page.");
+          window.location.href = "https://aksh-cloud.github.io/BlueChess.in/home.html";
+          return;
+      }
+  }
+
+  loadProfilePics();
+  async function loadProfilePics() {
+    const { data, error } = await supabaseClient
+      .from('shop_items')
+      .select('*');
+
+    const container = document.getElementById('profilePics');
+    container.innerHTML = '';
+
+    if (error) {
+      container.innerHTML = '<p style="color:red;">Failed to load profile pictures.</p>';
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<p>No profile pictures found.</p>';
+      return;
+    }
+
+    
+    for (const item of data) {
+      
+      const { data: urlData } = supabaseClient
+        .storage
+        .from('avatars')
+        .getPublicUrl(`buyable/${item.file_name}`);
+
+      const imgUrl = urlData.publicUrl;
+
+      const div = document.createElement('div');
+      div.style.display = 'inline-block';
+      div.style.margin = '10px';
+      div.style.textAlign = 'center';
+
+      div.innerHTML = `
+        <img src="${imgUrl}" alt="${item.file_name}" style="width:100px;height:100px;border-radius:10px;box-shadow:0 0 10px #4aa3ff;">
+        <div style="margin-top:6px;font-weight:bold;">${item.file_name}</div>
+        <div style="color:#4aa3ff;">${item.price} <img src="files/img/blue-rook.png" id="blueRook"></img></div>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  loadProfilePics();
+
+
+  document.getElementById('uploadForm').onsubmit = addNewP;
+
+  async function addNewP(event) {
+      event.preventDefault();
+      const fileInput = document.getElementById('profilePic');
+      const picNameInput = document.getElementById('picName');
+      const costInput = document.getElementById('cost');
+
+      if (fileInput.files.length === 0) {
+          alert("Please select a profile picture to upload.");
+          return;
+      }
+
+      const file = fileInput.files[0];
+      const picName = picNameInput.value.trim();
+      const cost = parseInt(costInput.value.trim());
+
+      if (!picName) {
+          alert("Please enter a profile name.");
+          return;
+      }
+
+      if (isNaN(cost) || cost < 0) {
+          alert("Please enter a valid cost in Blue Rooks.");
+          return;
+      }
+
+      // Use a unique file name: picName + timestamp + extension
+      const fileExt = file.name.split('.').pop();
+      const safePicName = picName ;
+      const fileName = safePicName;
+      const filePath = `buyable/${fileName}`;
+
+      // Uploading the file to Supabase Storage (make sure the bucket exists, e.g. 'avatars')
+      let { error: uploadError } = await supabaseClient.storage
+          .from('avatars')
+          .upload(filePath, file);
+
+      if (uploadError) {
+          console.error("Error uploading file:", uploadError);
+          alert("Failed to upload profile picture. Please try again.");
+          return;
+      }
+
+      // Inserting the new profile record into the database
+      let { data, error: insertError } = await supabaseClient
+          .from('shop_items')
+          .insert([
+              { file_name: picName, price: cost }
+          ]);
+
+      if (insertError) {
+          console.error("Error inserting profile record:", insertError);
+          alert("Failed to save profile picture info. Please try again.");
+          return;
+      }
+
+      alert("Profile picture uploaded successfully!");
+      // Clear the form
+      fileInput.value = '';
+      picNameInput.value = '';
+      costInput.value = '';
+  }
+    
+    
+
+  // Particles.js config
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80, density: { enable: true, value_area: 800 } },
+      color: { value: "#4aa3ff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.5 },
+      size: { value: 3 },
+      line_linked: { enable: true, distance: 150, color: "#4aa3ff", opacity: 0.4, width: 1 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" } }
+    },
+    retina_detect: true
+  });
+</script>
+</body>
+</html>

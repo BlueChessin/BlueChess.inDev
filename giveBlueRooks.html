@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blue Chess.in – Add New Profile Pics</title>
+    <meta name="description" content="Welcome to Blue Chess.in! Play online chess against bots, friends, or real players worldwide. Fast, fun, and completely free.">
+  <link rel="shortcut icon" href="files/img/-s-logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg,#02122a,#0f2b55);
+      color: #fff;
+      overflow: hidden;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(0,0,0,.25);
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 20px rgba(74,163,255,0.6), 0 0 40px rgba(74,163,255,0.3);
+      animation: sidebarGlow 3s infinite alternate;
+    }
+    @keyframes sidebarGlow {
+      from { box-shadow: 0 0 20px rgba(74,163,255,0.6), 0 0 40px rgba(74,163,255,0.3); }
+      to   { box-shadow: 0 0 30px rgba(74,163,255,1), 0 0 60px rgba(74,163,255,0.6); }
+    }
+    .sidebar h1 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .logo {
+      width: 200px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .menu button {
+      background-color: rgba(255,255,255,.1);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 8px;
+      text-align: left;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .menu button:hover {
+      background-color: rgba(74,163,255,.9);
+      color: #00122e;
+      transform: translateX(5px);
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
+      margin: 20px;
+      box-shadow: 0 0 25px rgba(255,255,255,.15);
+      text-align: center;
+    }
+    .main h2 {
+      margin-bottom: 20px;
+    }
+    .chessboard-img {
+      display: block;
+      margin: 0 auto;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(74,163,255,0.6);
+    }
+    /* Banners */
+  .banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    z-index: 9999;
+    animation: floatIn 0.4s ease-out;
+  }
+  @keyframes floatIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+  #joinBanner { background: #28a745; color: white; }
+  #challengeBanner { background: #ffc107; color: black; cursor: default; }
+  .banner button {
+    margin-left: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .banner #green { background: #28a745; color: white; }
+  .banner #red { background: #ff4d4d; color: white; }
+  .main {
+    /* Custom scrollbar styles */
+    scrollbar-width: 20px;
+    scrollbar-color: #4aa3ff #02122a;
+    flex: 1;
+    padding: 20px;
+    background: rgba(255,255,255,.06);
+    border-radius: 14px;
+    margin: 20px;
+    box-shadow: 0 0 25px rgba(255,255,255,.15);
+    text-align: center;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  .main::-webkit-scrollbar {
+    width: 8px;
+    background: #02122a;
+    border-radius: 8px;
+  }
+  .main::-webkit-scrollbar-thumb {
+    background: #4aa3ff;
+    border-radius: 8px;
+  }
+  .main::-webkit-scrollbar-thumb:hover {
+    background: #3578c7;
+  }
+  #username {
+    width: 300px;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(74,163,255,0.6);
+    transition: box-shadow 0.3s;
+    margin-top: 20px;
+  }
+    #username:focus {
+        box-shadow: 0 0 15px rgba(74,163,255,1);
+        outline: none;
+    }
+    #amount {
+        width: 300px;
+        padding: 10px;
+        font-size: 1em;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(74,163,255,0.6);
+        transition: box-shadow 0.3s;
+        margin-top: 20px;
+    }
+    #amount:focus {
+        box-shadow: 0 0 15px rgba(74,163,255,1);
+        outline: none;
+    }
+    
+    
+  </style>
+</head>
+<body>
+<div id="particles-js"></div>
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="files/img/-w-logo.png" alt="Blue Chess.in" class="logo">
+    <div class="menu">
+      <button id="viewP">View All Players</button>
+      <button id="banP">Ban Players</button>
+      <button id="newP">Add New Profile Pics</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <h1>Give Players Blue Rooks</h1>
+    <input type="text" name="username" id="username" placeholder="Enter Username" required>
+    <br><br>
+    
+    <input type="text" name="amount" id="amount" placeholder="Enter Amount of Blue Rooks" required>
+
+    <br><br>
+    <button id="giveRooksBtn" style="padding: 12px 24px; font-size: 1em; border: none; border-radius: 8px; background-color: #4aa3ff; color: white; cursor: pointer; box-shadow: 0 0 10px rgba(74,163,255,0.6); transition: background 0.3s, box-shadow 0.3s;">Give Blue Rooks</button>
+    <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+  </div>
+</div>
+
+
+
+<script>
+  const SUPABASE_URL = "https://ruevzmnbhoowmuleeqjb.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1ZXZ6bW5iaG9vd211bGVlcWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUzNTIsImV4cCI6MjA2OTk3MTM1Mn0.tt_xEAqLGiv92mvqhQaEvsjTBE6cmYDC3kkQcyPqsTY";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
+  function getCodeFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('code');
+  }
+
+  document.getElementById('viewP').onclick = function() {
+    window.location.href = 'adminpanel.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
+
+  document.getElementById('banP').onclick = function() {
+    window.location.href = 'ban.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
+
+  document.getElementById('newP').onclick = function() {
+    window.location.href = 'newProfiles.html?code=' + encodeURIComponent(getCodeFromURL());
+  };  
+
+
+  init();
+  
+  async function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      console.log("Admin code from URL:", code);
+      if (!code) {
+          alert("No code provided. Redirecting to enter code page.");
+          window.location.href = "entercode.html";
+          return;
+      }
+      const { data, error } = await supabaseClient
+          .from('secret_codes')
+          .select('*')
+          .eq('code1', code)
+          .single();
+      
+      if (error || !data) {
+          alert("This Page does Not Exist. Redirecting to Home page.");
+          window.location.href = "https://aksh-cloud.github.io/BlueChess.in/home.html";
+          return;
+      }
+  }
+
+  document.getElementById('giveRooksBtn').onclick = async function() {
+      const username = document.getElementById('username').value.trim();
+      const amount = parseInt(document.getElementById('amount').value.trim());
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = '';
+
+      if (!username || isNaN(amount) || amount <= 0) {
+          resultDiv.style.color = 'red';
+          resultDiv.textContent = 'Please enter a valid username and amount.';
+          return;
+      }
+
+      // Fetch user by username
+      const { data: user, error: fetchError } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('username', username)
+          .single();
+
+      if (fetchError || !user) {
+          resultDiv.style.color = 'red';
+          resultDiv.textContent = 'User not found.';
+          return;
+      }
+
+      // Update user's blue_rooks
+      const newBlueRooks = (user.blue_rooks || 0) + amount;
+      const { error: updateError } = await supabaseClient
+          .from('profiles')
+          .update({ blue_rooks: newBlueRooks })
+          .eq('id', user.id);
+
+      if (updateError) {
+          resultDiv.style.color = 'red';
+          resultDiv.textContent = 'Error updating blue rooks. Please try again.';
+          return;
+      }
+
+      resultDiv.style.color = 'green';
+      resultDiv.textContent = `Successfully added ${amount} Blue Rooks to ${username}. New total: ${newBlueRooks}.`;
+  };
+    
+
+  // Particles.js config
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80, density: { enable: true, value_area: 800 } },
+      color: { value: "#4aa3ff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.5 },
+      size: { value: 3 },
+      line_linked: { enable: true, distance: 150, color: "#4aa3ff", opacity: 0.4, width: 1 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" } }
+    },
+    retina_detect: true
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blue Chess.in - Home</title>
+  <link rel="shortcut icon" href="files/img/-s-logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg,#02122a,#0f2b55);
+      color: #fff;
+      overflow: hidden;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+    .error {
+      font-size: 10em;
+      margin: 0;
+      color: #ff0000;
+      text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    }
+    .error:hover {
+      text-shadow: 0 0 50px rgba(255, 0, 0, 1);
+    }
+    .error-message {
+      font-size: 1.5em;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      color: #fff;
+      background: #4aa3ff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(74,163,255,0.6);
+      transition: background 0.3s, box-shadow 0.3s;
+      margin-top: 20px;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+
+    }
+    .logo {
+      width: 200px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    .secret {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      width: 50px;
+      height: 50px;
+      margin-top: 100px;
+      margin-left: 0px;
+      margin-bottom: px;
+      width: auto;
+    }
+    .secret:hover {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    #secretInput {
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      box-shadow: 0 0 10px rgba(74,163,255,0.6);
+    }
+  </style>
+</head>
+<body>
+<div id="particles-js"></div>
+<div class="container">
+  
+  <h1 class="error">404</h1>
+  <p class="error-message">The File that you are looking for does NOT EXIST or is Not Made Yet</p>
+  <button onclick="goHome()">Go Home</button>
+  <button class="secret" id="secret">   </button>
+  <input type="text" id="secretInput" style="display:none;" placeholder="Enter Secret Code"><button class="secret" style="display: none;" id="codebtn">Enter</button>
+</div>
+
+
+<script>
+  const SUPABASE_URL = "https://ruevzmnbhoowmuleeqjb.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1ZXZ6bW5iaG9vd211bGVlcWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUzNTIsImV4cCI6MjA2OTk3MTM1Mn0.tt_xEAqLGiv92mvqhQaEvsjTBE6cmYDC3kkQcyPqsTY";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function goHome() {
+    window.location.href = "home.html";
+  }
+
+  document.getElementById("secret").addEventListener("click", async () => {
+    document.getElementById("secretInput").style.display = "inline";
+    document.getElementById("codebtn").style.display = "inline";
+  });
+
+    document.getElementById("codebtn").addEventListener("click", async () => {
+    const code = document.getElementById("secretInput").value;
+    const { data, error } = await supabaseClient
+      .from('secret_codes')
+      .select('*')
+      .eq('code', code)
+      .single();    
+    if (data) {
+      alert("Access Granted! Redirecting...");  
+        window.location.href = "entercode.html";
+    } else {
+      alert("Access Denied! Incorrect Code.");
+      window.location.href = "https://aksh-cloud.github.io/BlueChess.in/home.html";
+    }
+});
+
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80, density: { enable: true, value_area: 800 } },
+      color: { value: "#4aa3ff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.5 },
+      size: { value: 3 },
+      line_linked: { enable: true, distance: 150, color: "#4aa3ff", opacity: 0.4, width: 1 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" } }
+    },
+    retina_detect: true
+  });
+</script>
+</body>
+</html>
