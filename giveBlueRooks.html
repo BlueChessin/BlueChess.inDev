@@ -194,6 +194,7 @@
       <button id="viewP">View All Players</button>
       <button id="banP">Ban Players</button>
       <button id="newP">Add New Profile Pics</button>
+      <button id="giveB">Give Player Blue Rooks</button>
     </div>
   </div>
 
@@ -234,6 +235,10 @@
   document.getElementById('newP').onclick = function() {
     window.location.href = 'newProfiles.html?code=' + encodeURIComponent(getCodeFromURL());
   };  
+
+  document.getElementById('giveB').onclick = function() {
+    window.location.href = 'giveBlueRooks.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
 
 
   init();

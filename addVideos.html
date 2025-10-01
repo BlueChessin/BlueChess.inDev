@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Blue Chess.in – Admin Pannel</title>
+  <title>Blue Chess.in – Add New Chess Videos</title>
     <meta name="description" content="Welcome to Blue Chess.in! Play online chess against bots, friends, or real players worldwide. Fast, fun, and completely free.">
   <link rel="shortcut icon" href="files/img/-s-logo.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -152,42 +152,78 @@
   .main::-webkit-scrollbar-thumb:hover {
     background: #3578c7;
   }
-    
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background: rgba(0,0,0,0.15);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(74,163,255,0.2);
-  }
-  th, td {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    text-align: left;
-  }
-  th {
-    background: rgba(74,163,255,0.18);
-    color: #fff;
-    font-weight: bold;
-  }
-  tr:last-child td {
-    border-bottom: none;
-  }
-  tr:hover {
-    background: rgba(74,163,255,0.09);
-  }
-  .ban-btn {
-    background-color: rgba(255,255,255,.1);
-    color: #fff;
+  #username {
+    width: 300px;
+    padding: 10px;
+    font-size: 1em;
     border: none;
-    padding: 8px 12px;
-    font-size: 0.9em;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.3s, transform 0.2s;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(74,163,255,0.6);
+    transition: box-shadow 0.3s;
+    margin-top: 20px;
   }
+    #username:focus {
+        box-shadow: 0 0 15px rgba(74,163,255,1);
+        outline: none;
+    }
+    #amount {
+        width: 300px;
+        padding: 10px;
+        font-size: 1em;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(74,163,255,0.6);
+        transition: box-shadow 0.3s;
+        margin-top: 20px;
+    }
+    #amount:focus {
+        box-shadow: 0 0 15px rgba(74,163,255,1);
+        outline: none;
+    }
+    #title, #url, #author {
+        width: 300px;
+        padding: 10px;
+        font-size: 1em;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(74,163,255,0.6);
+        transition: box-shadow 0.3s;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+    }
+    #title:focus, #url:focus, #author:focus {
+        box-shadow: 0 0 15px rgba(74,163,255,1);
+        outline: none;
+    }
+    #addVideoBtn {
+        margin-top: 20px;
+        padding: 12px 28px;
+        font-size: 1.1em;
+        background: #4aa3ff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(74,163,255,0.6);
+        cursor: pointer;
+        transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    #addVideoBtn:hover {
+        background: #3578c7;
+        color: #e0eaff;
+        box-shadow: 0 0 18px rgba(74,163,255,1);
+    }
+    #preview {
+        display: block;
+        margin: 20px auto;
+        max-width: 500px;
+        width: 100%;
+        border-radius: 10px;
+        background: #000;
+        box-shadow: 0 0 20px rgba(74,163,255,0.4);
+    }
+    
   </style>
 </head>
 <body>
@@ -197,16 +233,23 @@
   <div class="sidebar">
     <img src="files/img/-w-logo.png" alt="Blue Chess.in" class="logo">
     <div class="menu">
+      <button id="viewP">View All Players</button>
       <button id="banP">Ban Players</button>
-      <button id="newP">View and Add new Profile Pics</button>
+      <button id="newP">Add New Profile Pics</button>
       <button id="giveB">Give Player Blue Rooks</button>
-      <button id="addV">View and Add new Chess Videos</button>
     </div>
   </div>
 
   <div class="main">
-    <h1>List Of Players</h1>
-    <table></table>
+    <h1>Add new Chess Videos</h1>
+    
+    <input type="text" id="title" placeholder="Enter Video Title" /><br>
+    <input type="text" id="url" placeholder="Enter YouTube Video URL" /><br>
+    <input type="text" id="author" placeholder="Enter Video's Creator" /><br>
+    <h3>Preview</h3>
+    <video id="preview"></video>
+    <button id="addVideoBtn">Add Video</button>
+    
   </div>
 </div>
 
@@ -217,12 +260,15 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1ZXZ6bW5iaG9vd211bGVlcWpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzOTUzNTIsImV4cCI6MjA2OTk3MTM1Mn0.tt_xEAqLGiv92mvqhQaEvsjTBE6cmYDC3kkQcyPqsTY";
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  init();
 
   function getCodeFromURL() {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('code');
   }
+
+  document.getElementById('viewP').onclick = function() {
+    window.location.href = 'adminpanel.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
 
   document.getElementById('banP').onclick = function() {
     window.location.href = 'ban.html?code=' + encodeURIComponent(getCodeFromURL());
@@ -230,15 +276,126 @@
 
   document.getElementById('newP').onclick = function() {
     window.location.href = 'newProfiles.html?code=' + encodeURIComponent(getCodeFromURL());
-  };
+  };  
 
   document.getElementById('giveB').onclick = function() {
     window.location.href = 'giveBlueRooks.html?code=' + encodeURIComponent(getCodeFromURL());
-  };  
+  };
 
-  document.getElementById('addV').onclick = function() {
-    window.location.href = 'addVideos.html?code=' + encodeURIComponent(getCodeFromURL());
-  };  
+document.getElementById('url').addEventListener('input', function() {
+    const url = this.value.trim();
+    const preview = document.getElementById('preview');
+    preview.style.display = 'none';
+    preview.removeAttribute('src');
+    preview.load();
+
+    
+    if (url.match(/\.(mp4|webm|ogg)$/i)) {
+        preview.src = url;
+        preview.controls = true;
+        preview.style.display = 'block';
+    } else {
+        // If YouTube URL, show a message (since <video> can't play YouTube directly)
+        preview.style.display = 'none';
+    }
+});
+
+// Use iframe for YouTube preview
+let ytIframe = null;
+document.getElementById('url').addEventListener('input', function() {
+    const url = this.value.trim();
+    const preview = document.getElementById('preview');
+    // Remove existing iframe if any
+    if (ytIframe) {
+        ytIframe.remove();
+        ytIframe = null;
+    }
+    // Hide and reset video preview
+    preview.style.display = 'none';
+    preview.removeAttribute('src');
+    preview.load();
+
+    // YouTube URL detection
+    const ytMatch = url.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i);
+    if (ytMatch) {
+        let embedUrl = url;
+        if (url.includes("watch?v=")) {
+            embedUrl = url.replace("watch?v=", "embed/");
+        } else if (url.includes("youtu.be/")) {
+            const videoId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (url.includes("youtube.com/shorts/")) {
+            const videoId = url.split("youtube.com/shorts/")[1].split(/[?&]/)[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+        ytIframe = document.createElement('iframe');
+        ytIframe.width = 500;
+        ytIframe.height = 280;
+        ytIframe.style.display = 'block';
+        ytIframe.style.margin = '20px auto';
+        ytIframe.style.borderRadius = '10px';
+        ytIframe.style.boxShadow = '0 0 20px rgba(74,163,255,0.4)';
+        ytIframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        ytIframe.allowFullscreen = true;
+        ytIframe.src = embedUrl;
+        ytIframe.frameBorder = 0;
+        preview.parentNode.insertBefore(ytIframe, preview.nextSibling);
+    }
+});
+document.getElementById('preview').style.display = 'none';
+
+document.getElementById('addVideoBtn').onclick = async function() {
+    const title = document.getElementById('title').value.trim();
+    const url = document.getElementById('url').value.trim();
+    const author = document.getElementById('author').value.trim();
+
+    if (!title || !url || !author) {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    
+    const isYouTube = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i.test(url);
+    const isDirectVideo = url.match(/\.(mp4|webm|ogg)$/i);
+
+    if (!isYouTube && !isDirectVideo) {
+        alert('Please enter a valid YouTube or direct video URL.');
+        return;
+    }
+
+    
+    let embedUrl = url;
+    if (isYouTube) {
+        if (url.includes("watch?v=")) {
+            embedUrl = url.replace("watch?v=", "embed/");
+        } else if (url.includes("youtu.be/")) {
+            const videoId = url.split("youtu.be/")[1].split(/[?&]/)[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        } else if (url.includes("youtube.com/shorts/")) {
+            const videoId = url.split("youtube.com/shorts/")[1].split(/[?&]/)[0];
+            embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+    }
+
+    
+    const { data, error } = await supabaseClient
+        .from('videos')
+        .insert([{ title, url: embedUrl, author }]);
+
+    if (error) {
+        alert('Error adding video: ' + error.message);
+        return;
+    }
+
+    alert('Video added successfully!');
+    document.getElementById('title').value = '';
+    document.getElementById('url').value = '';
+    document.getElementById('author').value = '';
+    document.getElementById('preview').style.display = 'none';
+};
+
+
+  init();
   
   async function init() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -262,85 +419,8 @@
       }
   }
 
-  loadPlayers();
-
-    async function fetchPlayers() {
-      const { data, error } = await supabaseClient
-        .from('profiles')
-        .select('id, username, email, dev, owner, admin, coadmin, created_at, elo, blue_rooks, banned, friends, profile');
-      
-      if (error) {
-        console.error('Error fetching players:', error);
-        return [];
-      }
-      return data;
-    }  
-    async function loadPlayers() {
-      const players = await fetchPlayers();
-      const table = document.querySelector('.main table');
-      table.innerHTML = `
-        <tr>
-          <th>ID</th>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Dev</th>
-          <th>Owner</th>
-          <th>Admin</th>
-          <th>Co-Admin</th>
-          <th>Joined At</th>
-          <th>Elo</th>
-          <th>Blue Rooks</th>
-          <th>Banned</th>
-          <th>Friends</th>
-          <th>Profile Pic</th>
-          <th>Ban/Unban</th>
-        </tr>
-      `;
-      players.forEach(player => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${player.id}</td>
-          <td>${player.username}</td>
-          <td>${player.email}</td>
-          <td>${player.dev}</td>
-          <td>${player.owner}</td>
-          <td>${player.admin}</td>
-          <td>${player.coadmin}</td>
-          <td>${new Date(player.created_at).toLocaleDateString()}</td>
-          <td>${player.elo}</td>
-          <td>${player.blue_rooks}</td>
-          <td>${player.banned}</td>
-          <td>${player.friends}</td>
-          <td>${player.profile}</td>
-          <td><button class="ban-btn" data-id="${player.id}">${player.banned ? 'Unban' : 'Ban'}</button></td>
-        `;
-        table.appendChild(row);
-      });
-    }
-
-    document.querySelector('.main').addEventListener('click', async (event) => {
-      
-      if (event.target.classList.contains('ban-btn')) {
-        const playerId = event.target.getAttribute('data-id');
-        
-        const currentStatus = event.target.textContent === 'Unban';
-        const { error } = await supabaseClient
-          .from('profiles')
-          
-          .update({ banned: !currentStatus })
-          .eq('id', playerId);
-        
-        confirm("Are you sure you want to change the ban status of the player?");
-        if (!confirm) return;
-        if (error) {
-          console.error('Error updating ban status:', error);
-          alert('Failed to update ban status.');
-        } else {
-          event.target.textContent = currentStatus ? 'Ban' : 'Unban';
-          loadPlayers();
-        }
-      }
-    });
+  
+    
 
   // Particles.js config
   particlesJS("particles-js", {

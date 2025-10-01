@@ -190,6 +190,7 @@
       <button id="viewP">View All Players</button>
       <button id="newP">View and Add new Profile Pics</button>
       <button id="giveB">Give Player Blue Rooks</button>
+      <button id="addV">View and Add new Chess Videos</button>
     </div>
   </div>
 
@@ -223,6 +224,10 @@
   document.getElementById('giveB').onclick = function() {
     window.location.href = 'giveBlueRooks.html?code=' + encodeURIComponent(getCodeFromURL());
   };  
+
+  document.getElementById('addV').onclick = function() {
+    window.location.href = 'addVideos.html?code=' + encodeURIComponent(getCodeFromURL());
+  };
 
 
   init();
