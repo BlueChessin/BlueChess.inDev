@@ -319,11 +319,11 @@
               banBtn.textContent = player.banned ? 'Unban' : 'Ban';
               return;
             }
-            const { profile } = await supabaseClient
+            const { profiles } = await supabaseClient
               .from('profiles')
-              .select('dev');
-            if (profile && profile.dev) {
-              alert("You cannot ban a developer!");
+              .select('*');
+            if (player.owner) {
+              alert("You cannot ban the Owner!");
               banBtn.disabled = false;
               banBtn.textContent = player.banned ? 'Unban' : 'Ban';
               return;
